@@ -1,0 +1,15 @@
+{
+  "name": "ged",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "https://github.com/Hamidezz/Gestion.git",
+  "author": "mehdiezz <you@example.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.8"
+  }
+}
