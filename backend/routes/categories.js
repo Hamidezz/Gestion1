@@ -24,12 +24,12 @@ router
   .route('/')
   .get(
     protect,
-    authorize('servise1', 'admin'),
+    authorize('service1', 'admin'),
     getCategories
   )
   .post(
     protect,
-    // authorize('servise1', 'admin'),
+    // authorize('service1', 'admin'),
     createCategory
   )
 
@@ -37,7 +37,7 @@ router
   .route('/:id')
   .get(
     protect,
-    authorize('servise1', 'admin'),
+    authorize('service1', 'admin'),
     getCategory
   )
 //.delete(deleteCategory)
