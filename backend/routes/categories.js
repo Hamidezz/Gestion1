@@ -3,10 +3,9 @@ const {
   getCategories,
   createCategory,
   getCategory,
+  updateCategory,
+  deleteCategory,
 } = require('../controllers/category')
-
-// include other resource routers
-const documentRouter = require('./documents')
 
 // include protect middleware
 const {
@@ -17,19 +16,21 @@ const {
 // express router
 const router = express.Router()
 
-// re-routes into other resource routers
-router.use('/:categoryId/documents', documentRouter)
-
 router
   .route('/')
   .get(
     protect,
-    authorize('service1', 'admin'),
+    authorize(
+      'service1',
+      'service2',
+      'service3',
+      'admin'
+    ),
     getCategories
   )
   .post(
     protect,
-    // authorize('service1', 'admin'),
+    authorize('service2', 'admin'),
     createCategory
   )
 
@@ -37,9 +38,23 @@ router
   .route('/:id')
   .get(
     protect,
-    authorize('service1', 'admin'),
+    authorize(
+      'service1',
+      'service2',
+      'service3',
+      'admin'
+    ),
     getCategory
   )
-//.delete(deleteCategory)
+  .put(
+    protect,
+    authorize('service2', 'admin'),
+    updateCategory
+  )
+  .delete(
+    protect,
+    authorize('service2', 'admin'),
+    deleteCategory
+  )
 
 module.exports = router

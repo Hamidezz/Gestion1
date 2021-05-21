@@ -1,11 +1,12 @@
 const express = require('express')
 const {
-  getDocuments,
-  createDocument,
-  getDocument,
-  updateDocument,
-  deleteDocument,
-} = require('../controllers/document')
+  getCollection,
+  getCollections,
+  deleteCollection,
+  createCollection,
+  updateCollection,
+  addCollectionToCat,
+} = require('../controllers/collection')
 
 // include protect middleware
 const {
@@ -13,6 +14,7 @@ const {
   authorize,
 } = require('../middlewares/auth')
 
+// express router
 const router = express.Router()
 
 router
@@ -20,30 +22,43 @@ router
   .get(
     protect,
     authorize('service1', 'service2', 'admin'),
-    getDocuments
+    getCollections
   )
   .post(
     protect,
     authorize('service1', 'admin'),
-    createDocument
+    createCollection
   )
 
 router
   .route('/:id')
   .get(
     protect,
-    authorize('service1', 'service2', 'admin'),
-    getDocument
+    authorize(
+      'service1',
+      'service2',
+      'service3',
+      'admin'
+    ),
+    getCollection
   )
   .put(
     protect,
     authorize('service1', 'admin'),
-    updateDocument
+    updateCollection
   )
   .delete(
     protect,
     authorize('service1', 'admin'),
-    deleteDocument
+    deleteCollection
+  )
+
+router
+  .route('/:collectionId/Categories/:categoryId')
+  .put(
+    protect,
+    authorize('service1', 'admin'),
+    addCollectionToCat
   )
 
 module.exports = router

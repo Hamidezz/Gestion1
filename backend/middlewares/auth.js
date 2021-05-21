@@ -29,13 +29,12 @@ exports.protect = async (req, res, next) => {
       token,
       process.env.JWT_SECRET
     )
-    req.user = await User.findById(decoded.id).select(
-      '-password'
-    )
+
+    req.user = await User.findById(decoded.id)
 
     next()
   } catch (err) {
-    console.log(err)
+    // console.log(err)
     return next(
       new ErrorResponse(
         'Not authorize, token failed',
@@ -52,7 +51,7 @@ exports.authorize = (...roles) => {
     if (!roles.includes(req.user.role)) {
       return next(
         new ErrorResponse(
-          `User role <<${req.user.role}>> is not authorizd to access this page`,
+          `User ${req.user.name} is not authorizd to do this action`,
           403
         )
       )

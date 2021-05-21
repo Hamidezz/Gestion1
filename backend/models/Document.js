@@ -5,24 +5,33 @@ const DocumentSchema = mongoose.Schema(
     category: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Category',
-      required: true,
+      default: null,
     },
-    nom: {
+    firstName: {
       type: String,
-      required: [true, 'nom is required'],
+      required: [true, 'firstName is required'],
       trim: true,
       maxlength: [
         50,
-        'nom can not be more than 50 characters',
+        'firstName can not be more than 50 characters',
       ],
     },
-    prenom: {
+    lastName: {
       type: String,
-      required: [true, 'prenom is required'],
+      required: [true, 'lastName is required'],
       trim: true,
       maxlength: [
         50,
-        'prenom can not be more than 50 characters',
+        'lastName can not be more than 50 characters',
+      ],
+    },
+    object: {
+      type: String,
+      required: [true, 'object is required'],
+      trim: true,
+      maxlength: [
+        50,
+        'object can not be more than 50 characters',
       ],
     },
     cin: {
@@ -42,29 +51,29 @@ const DocumentSchema = mongoose.Schema(
         'province can not be more than 50 characters',
       ],
     },
-    ville: {
+    city: {
       type: String,
-      required: [true, 'ville is required'],
+      required: [true, 'city is required'],
       maxlength: [
         50,
-        'ville can not be more than 50 characters',
+        'city can not be more than 50 characters',
       ],
     },
-    numDossier: {
+    documentNum: {
       type: Number,
-      required: [true, 'numDossier is required'],
+      required: [true, 'document number is required'],
     },
     date: {
       type: Date,
       default: Date.now(),
       required: [true, 'date is required'],
     },
-    fonction: {
+    profession: {
       type: String,
-      required: [true, 'fonction is required'],
+      required: [true, 'profession is required'],
       maxlength: [
         50,
-        'fonction can not be more than 50 characters',
+        'profession can not be more than 50 characters',
       ],
     },
     address: {
@@ -73,11 +82,16 @@ const DocumentSchema = mongoose.Schema(
     },
     resume: {
       type: String,
-      required: [true, 'cin is required'],
+      required: [true, 'resume is required'],
       maxlength: [
         500,
-        'Description can not be more than 500 characters',
+        'resume can not be more than 500 characters',
       ],
+    },
+    status: {
+      type: String,
+      enum: ['new', 'pending', 'sorted', 'placed'],
+      default: 'new',
     },
   },
   { timestamps: true }

@@ -7,6 +7,7 @@ const { errorHandler } = require('./middlewares/error')
 
 // load routes
 const documentRoutes = require('./routes/documents')
+const collectionRoutes = require('./routes/collections')
 const categoryRoutes = require('./routes/categories')
 const authRoutes = require('./routes/auth')
 
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 
 // Mount routers
 app.use('/api/documents', documentRoutes)
+app.use('/api/collections', collectionRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/auth', authRoutes)
 
@@ -49,7 +51,7 @@ const server = createdServer.listen(
 
 // handel unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`)
+  console.log(`${err}`)
   // close server & exit process
   server.close(() => {
     process.exit(1)

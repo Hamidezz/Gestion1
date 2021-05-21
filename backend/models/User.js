@@ -1,5 +1,3 @@
-const crypto = require('crypto')
-
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -26,8 +24,8 @@ const UserSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['servise1', 'servise2', 'servise3'],
-      default: 'servise1',
+      enum: ['service1', 'service2', 'service3'],
+      default: 'service1',
     },
     password: {
       type: String,
@@ -54,9 +52,9 @@ UserSchema.pre('save', async function (next) {
 
 // Match user entered password to hashed password in DB
 UserSchema.methods.matchPassword = async function (
-  password
+  pass
 ) {
-  return await bcrypt.compare(password, this.password)
+  return await bcrypt.compare(pass, this.password)
 }
 
 // Sign JWT and return
