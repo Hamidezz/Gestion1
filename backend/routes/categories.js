@@ -5,6 +5,7 @@ const {
   getCategory,
   updateCategory,
   deleteCategory,
+  placeCategory,
 } = require('../controllers/category')
 
 // include protect middleware
@@ -55,6 +56,14 @@ router
     protect,
     authorize('service2', 'admin'),
     deleteCategory
+  )
+
+router
+  .route('/:categoryId/collections/:collectionId')
+  .put(
+    protect,
+    authorize('service3', 'admin'),
+    placeCategory
   )
 
 module.exports = router

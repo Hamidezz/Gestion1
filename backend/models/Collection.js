@@ -36,6 +36,21 @@ CollectionSchema.virtual('history', {
   justOne: false,
 })
 
+// Cascad delete collection from category when a collection is deleted
+CollectionSchema.pre('remove', async function (next) {
+  await this.model('Category').updateOne(
+    {
+      collections: this._id,
+    },
+    {
+      $pull: {
+        collections: this._id,
+      },
+    }
+  )
+  next()
+})
+
 module.exports = mongoose.model(
   'Collection',
   CollectionSchema

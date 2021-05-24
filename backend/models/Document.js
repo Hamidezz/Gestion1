@@ -37,7 +37,6 @@ const DocumentSchema = mongoose.Schema(
     cin: {
       type: String,
       required: [true, 'cin is required'],
-      unique: true,
       maxlength: [
         50,
         'cin can not be more than 500 characters',
@@ -97,6 +96,20 @@ const DocumentSchema = mongoose.Schema(
   { timestamps: true }
 )
 
+// Cascad delete document from collection when a document is deleted
+DocumentSchema.pre('remove', async function (next) {
+  await this.model('Collection').updateOne(
+    {
+      documents: { $elemMatch: { doc: this._id } },
+    },
+    {
+      $pull: {
+        documents: { doc: this._id },
+      },
+    }
+  )
+  next()
+})
 module.exports = mongoose.model(
   'Document',
   DocumentSchema

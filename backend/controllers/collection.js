@@ -25,7 +25,7 @@ exports.getCollection = async (req, res, next) => {
   if (!collection) {
     return next(
       new ErrorResponse(
-        `category not found with id ${req.params.id}`,
+        `collection not found with id ${req.params.id}`,
         404
       )
     )
@@ -61,6 +61,7 @@ exports.createCollection = async (req, res, next) => {
     text: `${req.user.name} created new collection , ${documents.length} documents`,
     collectionId: collection,
     sent: true,
+    sentAt: Date.now(),
   })
 
   res.status(200).json({
@@ -101,7 +102,9 @@ exports.updateCollection = async (req, res, next) => {
 // @route   delete /api/collections/:id
 // @access  private
 exports.deleteCollection = async (req, res, next) => {
-  const collection = Collection.findById(req.params.id)
+  const collection = await Collection.findById(
+    req.params.id
+  )
 
   // chek if doc exist
   if (!collection) {
@@ -113,8 +116,8 @@ exports.deleteCollection = async (req, res, next) => {
     )
   }
 
-  // delete doc
-  await Collection.findByIdAndRemove(req.params.id)
+  // delete collection
+  collection.remove()
 
   res.status(200).json({
     success: true,
@@ -123,16 +126,48 @@ exports.deleteCollection = async (req, res, next) => {
 }
 
 // @desc    add collection to category
-// @route   put /api/collections/:collectionId/Categories/:categoryId
+// @route   put /api/collections/add/:collectionId/Categories/:categoryId
 // @access  private
 exports.addCollectionToCat = async (
   req,
   res,
   next
 ) => {
-  let category = await Category.findById(
-    req.params.categoryId
+  updateCatCollectios(
+    req.params.categoryId,
+    req.params.collectionId,
+    'push',
+    res,
+    next
   )
+}
+
+// @desc    remove collection from category
+// @route   put /api/collections/remove/:collectionId/Categories/:categoryId
+// @access  private
+exports.removeCollectionFromCat = async (
+  req,
+  res,
+  next
+) => {
+  updateCatCollectios(
+    req.params.categoryId,
+    req.params.collectionId,
+    'pull',
+    res,
+    next
+  )
+}
+
+// update collections in category
+const updateCatCollectios = async (
+  catId,
+  colId,
+  action,
+  res,
+  next
+) => {
+  let category = await Category.findById(catId)
   // check for cat
   if (!category) {
     return next(
@@ -140,9 +175,7 @@ exports.addCollectionToCat = async (
     )
   }
 
-  let collection = await Collection.findById(
-    req.params.collectionId
-  )
+  let collection = await Collection.findById(colId)
 
   // check for collection
   if (!collection) {
@@ -151,30 +184,58 @@ exports.addCollectionToCat = async (
     )
   }
 
-  // update collection to sorted
-  collection = await Collection.findByIdAndUpdate(
-    req.params.collectionId,
-    { status: 'sorted' },
-    { new: true, runValidators: true }
-  )
+  // check if remove or add collection
 
-  // add collection to category
-  category = await Category.findByIdAndUpdate(
-    req.params.categoryId,
-    {
-      collectionId: collection._id,
-    },
-    { new: true, runValidators: true }
-  )
+  if (action === 'push') {
+    // add collection to category
+    category = await Category.findByIdAndUpdate(
+      catId,
+      {
+        $push: {
+          collections: collection,
+        },
+      }
+    )
 
-  // update hisstory
-  await History.findOneAndUpdate(
-    { collectionId: collection._id },
-    {
-      sorted: true,
-    },
-    { new: true, runValidators: true }
-  )
+    // update collection to sorted
+    collection = await Collection.findByIdAndUpdate(
+      colId,
+      { status: 'sorted' },
+      { new: true, runValidators: true }
+    )
+
+    // update hisstory
+    await History.findOneAndUpdate(
+      { collectionId: collection._id },
+      {
+        sorted: true,
+        sortedAt: Date.now(),
+      },
+      { new: true, runValidators: true }
+    )
+  }
+
+  if (action === 'pull') {
+    // remove collection from category
+    category = await Category.findByIdAndUpdate(
+      catId,
+      {
+        $pull: {
+          collections: collection._id,
+        },
+      }
+    )
+
+    // update hisstory
+    await History.findOneAndUpdate(
+      { collectionId: collection._id },
+      {
+        sorted: false,
+        sortedAt: undefined,
+      },
+      { new: true, runValidators: true }
+    )
+  }
 
   res.status(200).json({
     success: true,

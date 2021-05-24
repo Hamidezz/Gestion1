@@ -42,10 +42,12 @@ const CategorySchema = mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    collectionId: {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Collection',
-    },
+    collections: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Collection',
+      },
+    ],
   },
 
   // {

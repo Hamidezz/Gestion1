@@ -6,6 +6,7 @@ const {
   createCollection,
   updateCollection,
   addCollectionToCat,
+  removeCollectionFromCat,
 } = require('../controllers/collection')
 
 // include protect middleware
@@ -54,11 +55,21 @@ router
   )
 
 router
-  .route('/:collectionId/Categories/:categoryId')
+  .route('/add/:collectionId/Categories/:categoryId')
   .put(
     protect,
-    authorize('service1', 'admin'),
+    authorize('service2', 'admin'),
     addCollectionToCat
+  )
+
+router
+  .route(
+    '/remove/:collectionId/Categories/:categoryId'
+  )
+  .put(
+    protect,
+    authorize('service2', 'admin'),
+    removeCollectionFromCat
   )
 
 module.exports = router

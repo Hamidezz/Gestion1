@@ -1,5 +1,7 @@
 const Category = require('../models/Category')
 const Document = require('../models/Document')
+const Collection = require('../models/Collection')
+const History = require('../models/History')
 const ErrorResponse = require('../utils/ErrorResponse')
 
 // @desc    Get Categories
@@ -46,7 +48,7 @@ exports.createCategory = async (req, res, next) => {
 exports.getCategory = async (req, res, next) => {
   const category = await Category.findById(
     req.params.id
-  ).populate('collectionId', 'documents')
+  ).populate('collections', 'documents')
 
   if (!category) {
     return next(
@@ -148,5 +150,53 @@ exports.placeCategory = async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: {},
+  })
+}
+
+// @desc    place category
+// @route   put /api/Categories/:categoryId/collections/:collectionId
+// @access  private
+exports.placeCategory = async (req, res, next) => {
+  let category = await Category.findById(
+    req.params.categoryId
+  )
+  // check for cat
+  if (!category) {
+    return next(
+      new ErrorResponse(`category not found`, 404)
+    )
+  }
+
+  let collection = await Collection.findById(
+    req.params.collectionId
+  )
+
+  // check for collection
+  if (!collection) {
+    return next(
+      new ErrorResponse(`collection not found`, 404)
+    )
+  }
+
+  // update collection to sorted
+  collection = await Collection.findByIdAndUpdate(
+    req.params.collectionId,
+    { status: 'placed' },
+    { new: true, runValidators: true }
+  )
+
+  // update hisstory
+  await History.findOneAndUpdate(
+    { collectionId: collection._id },
+    {
+      placed: true,
+      placedAt: Date.now(),
+    },
+    { new: true, runValidators: true }
+  )
+
+  res.status(200).json({
+    success: true,
+    data: category,
   })
 }
