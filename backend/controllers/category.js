@@ -116,44 +116,6 @@ exports.deleteCategory = async (req, res, next) => {
 }
 
 // @desc    place category
-// @route   post /api/Categories/:id
-// @access  private
-exports.placeCategory = async (req, res, next) => {
-  let category = await Category.findById(req.params.id)
-
-  if (!category) {
-    return next(
-      new ErrorResponse(
-        `category not found with id ${req.params.id}`,
-        404
-      )
-    )
-  }
-
-  const { documents } = req.body
-
-  // get only ids
-  const documentIds = documents.map((d) => d.document)
-
-  // find all document with & update
-  await Document.updateMany(
-    {
-      _id: { $in: documentIds },
-    },
-    {
-      category: category._id,
-      status: 'placed',
-    },
-    { multi: true }
-  )
-
-  res.status(200).json({
-    success: true,
-    data: {},
-  })
-}
-
-// @desc    place category
 // @route   put /api/Categories/:categoryId/collections/:collectionId
 // @access  private
 exports.placeCategory = async (req, res, next) => {
