@@ -1,38 +1,206 @@
-.App {
-  text-align: center;
+ul {
+  list-style-type: none;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* sidBar */
+.sidebar {
+  height: 100vh;
+  color: #adadad;
+  width: 270px;
+  min-width: 270px;
+  text-align: left;
+  transition: height, width, left, right, 0.3s;
+  position: relative;
+  z-index: 1009;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.sidebar-inner {
+  background: #1d1d1d;
+  height: 100%;
+  position: relative;
+  z-index: 101;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.sidebar-layout {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
+  z-index: 101;
+}
+
+.sidebar-header {
+  padding: 24px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(173, 173, 173, 0.2);
+}
+
+/* sideBar menu */
+.sidebar-menu {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.sidebar-inner-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px 35px 8px 20px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.sidebar-inner-item .icon-wrapper {
+  margin-right: 10px;
+  font-size: 14px;
+  width: 35px;
+  min-width: 35px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  display: inline-block;
+  background-color: #2b2b2b;
+  border-radius: 50%;
+}
+
+.sidebar-inner-item .icon {
+  display: flex;
+  height: 100%;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: red;
+}
+.sidebar-inner-item .item-content {
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 16px;
+}
+.sidebar-inner-item .suffix {
+  opacity: 1;
+  transition: opacity 0.2s;
+  font-size: 18px;
+  cursor: pointer;
+}
+.sidebar-inner-item .suffix .badge {
+  color: #fff;
+  background: #d63030;
+  padding: 3px 6px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  border-radius: 15px;
 }
 
-.App-link {
-  color: #61dafb;
+.arrow-wrapper {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.arrow-wrapper .arrow {
+  display: inline-block;
+  border-color: #adadad;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  padding: 2.5px;
+  vertical-align: middle;
+  transition: transform 0.3s;
+  transform: rotate(-45deg);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.menu-slidedown {
+  padding-left: 20px;
+  position: relative;
+  background-color: #292929;
+  max-height: 0;
+  transition: max-height 0.15s ease-out;
+  overflow: hidden;
+}
+
+.menu-slidedown ul {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.menu-slidedown ul .inner-item {
+  padding: 8px 30px 8px 15px;
+}
+
+.menu-slidedown ul .inner-item::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  min-width: 4px;
+  height: 4px;
+  border: 1px solid hsla(0, 0%, 100%, 0.05);
+  border-radius: 50%;
+  margin-right: 15px;
+  position: relative;
+  box-shadow: 1px 0 0 #adadad, 0 -1px 0 #adadad,
+    0 1px 0 #adadad, -1px 0 0 #adadad;
+}
+
+.menu-slidedown ul .inner-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.3s ease-in-out;
+}
+
+.menu-slidedown ul .inner-item span:hover {
+  color: #fff;
+}
+
+.menu-slidedown li {
+  font-size: 15px;
+}
+
+/* menu open */
+
+.arrow.open {
+  transform: rotate(45deg);
+}
+.menu-slidedown.open {
+  max-height: 400px;
+  transition: max-height 0.5s ease-in-out;
+}
+
+/* overlay */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -270px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar.open .overlay {
+    display: block;
   }
 }
