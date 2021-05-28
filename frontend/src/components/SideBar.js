@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import '../app.css'
 
 const MenuItem = ({
@@ -48,19 +49,24 @@ const MenuItem = ({
         >
           <div>
             <ul>
-              {subItems.map(({ itemTitle }) => (
-                <li class="menu-item">
-                  <div
-                    class="inner-item"
-                    tabindex="0"
-                    role="button"
-                  >
-                    <span class="item-content">
-                      {itemTitle}
-                    </span>
-                  </div>
-                </li>
-              ))}
+              {subItems.map(
+                ({ itemTitle, linkTo }) => (
+                  <li class="menu-item">
+                    <div
+                      class="inner-item"
+                      tabindex="0"
+                      role="button"
+                    >
+                      <Link
+                        to={`${linkTo}`}
+                        class="item-content"
+                      >
+                        {itemTitle}
+                      </Link>
+                    </div>
+                  </li>
+                )
+              )}
             </ul>
           </div>
         </div>
@@ -143,9 +149,11 @@ const SideBar = () => {
                   subItems={[
                     {
                       itemTitle: 'create document',
+                      linkTo: '/new_document',
                     },
                     {
                       itemTitle: 'view documents',
+                      linkTo: '/new_document',
                     },
                   ]}
                 />
@@ -169,9 +177,11 @@ const SideBar = () => {
                   subItems={[
                     {
                       itemTitle: 'view categories',
+                      linkTo: '/new_category',
                     },
                     {
                       itemTitle: 'create category',
+                      linkTo: '/new_category',
                     },
                   ]}
                 />
