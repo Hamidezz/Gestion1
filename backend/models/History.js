@@ -2,19 +2,18 @@ const mongoose = require('mongoose')
 
 const HistorySchema = mongoose.Schema(
   {
-    text: {
-      type: String,
-    },
-    collectionId: {
+    document: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Collection',
+      ref: 'Document',
     },
-    sent: Boolean,
-    sentAt: Date,
-    sorted: Boolean,
-    sortedAt: Date,
-    placed: Boolean,
-    placedAt: Date,
+    category: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Category',
+    },
+    order: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Order',
+    },
   },
   { timestamps: true }
 )

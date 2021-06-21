@@ -25,7 +25,7 @@ const DocumentSchema = mongoose.Schema(
         'lastName can not be more than 50 characters',
       ],
     },
-    object: {
+    objet: {
       type: String,
       required: [true, 'object is required'],
       trim: true,
@@ -89,7 +89,7 @@ const DocumentSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['new', 'pending', 'sorted', 'placed'],
+      enum: ['new', 'pending', 'placed'],
       default: 'new',
     },
   },
@@ -108,6 +108,7 @@ DocumentSchema.pre('remove', async function (next) {
       },
     }
   )
+
   next()
 })
 module.exports = mongoose.model(

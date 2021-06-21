@@ -1,5 +1,6 @@
 const Collection = require('../models/Collection')
 const Document = require('../models/Document')
+const History = require('../models/History')
 const ErrorResponse = require('../utils/ErrorResponse')
 
 // @desc    Get documents
@@ -52,10 +53,29 @@ exports.createDocument = async (req, res, next) => {
     )
   }
 
-  const document = await Document.create(req.body)
+  let document
+
+  try {
+    document = await Document.create(req.body)
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      return next(
+        new ErrorResponse(
+          'veuillez remplir toutes les entrées',
+          400
+        )
+      )
+    }
+  }
+
+  // create new history
+  await History.create({
+    document,
+  })
 
   res.status(200).json({
     success: true,
+    message: 'nouveau document créé avec succès',
     data: document,
   })
 }
@@ -76,16 +96,28 @@ exports.updateDocument = async (req, res, next) => {
     )
   }
 
-  // update doc
-  document = await Document.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true, runValidators: true }
-  )
-  res.status(200).json({
-    success: true,
-    data: document,
-  })
+  try {
+    document = await Document.findByIdAndUpdate(
+      req.params.id,
+      req.body
+    )
+
+    res.status(200).json({
+      success: true,
+      message: 'document modifiée créé avec succès',
+      data: document,
+    })
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      console.log(err)
+      return next(
+        new ErrorResponse(
+          'veuillez remplir toutes les entrées',
+          400
+        )
+      )
+    }
+  }
 }
 
 // @desc    delete document
@@ -106,37 +138,17 @@ exports.deleteDocument = async (req, res, next) => {
     )
   }
 
-  // await Collection.updateOne(
-  //   {
-  //     documents: {
-  //       $elemMatch: { doc: document },
-  //     },
-  //   },
-  //   {
-  //     $pull: {
-  //       documents: {
-  //         $elemMatch: { doc: document },
-  //       },
-  //     },
-  //   }
-  // )
+  await Collection.deleteMany({
+    documents: {
+      $elemMatch: { doc: document._id },
+      $size: 1,
+    },
+  })
 
-  // await Collection.fin(
-  //   {
-  //     documents: { $in: { doc: document } },
-  //   },
-  // {
-  //   $pull: {
-  //     documents: { $in: { doc: document._id } },
-  //   },
-  // }
-  // )
-
-  // delete doc
-  // await Document.findByIdAndRemove(req.params.id)
   document.remove()
   res.status(200).json({
     success: true,
+    message: 'document supprimée créé avec succès',
     data: {},
   })
 }

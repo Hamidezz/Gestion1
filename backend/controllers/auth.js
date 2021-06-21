@@ -5,7 +5,7 @@ const User = require('../models/User')
 // @route   POST /api/auth/register
 // @access  public
 exports.register = async (req, res, next) => {
-  const { name, email, password, role } = req.body
+  const { email, name } = req.body
 
   const userExist = await User.findOne({ email })
 
@@ -19,16 +19,16 @@ exports.register = async (req, res, next) => {
     )
   }
 
-  const user = await User.create({
-    name,
-    email,
-    password,
-    role,
-  })
+  const user = await User.create(req.body)
 
   if (user) {
     res.status(201).json({
-      user,
+      message: `${name}, welcome to our workspace`,
+      user: {
+        name,
+        email,
+        role: user.role,
+      },
       token: user.generateToken(),
     })
   } else {
@@ -60,12 +60,12 @@ exports.login = async (req, res, next) => {
   )
   if (!user) {
     return next(
-      new ErrorResponse('Invalid credentials', 401)
+      new ErrorResponse('Invalid email', 401)
     )
   }
 
   //   check if password is matches
-  const isMatch = user.matchPassword(password)
+  const isMatch = await user.matchPassword(password)
   if (!isMatch) {
     return next(
       new ErrorResponse('Invalid password', 401)
@@ -74,7 +74,12 @@ exports.login = async (req, res, next) => {
 
   return res.json({
     success: true,
-    user,
+    message: 'welcome back to GED',
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    },
     token: user.generateToken(),
   })
 }

@@ -1,15 +1,15 @@
 const Category = require('../models/Category')
+const Document = require('../models/Document')
 const Collection = require('../models/Collection')
-const History = require('../models/History')
 const ErrorResponse = require('../utils/ErrorResponse')
+const { notify } = require('../utils/notify')
 
 // @desc    Get collections
 // @route   GET /api/collections
 // @access  private
 exports.getCollections = async (req, res, next) => {
   const collections = await Collection.find().populate(
-    'documents.doc',
-    'firstName cin'
+    'documents.doc'
   )
   res.json({ success: true, data: collections })
 }
@@ -20,7 +20,7 @@ exports.getCollections = async (req, res, next) => {
 exports.getCollection = async (req, res, next) => {
   const collection = await Collection.findById(
     req.params.id
-  ).populate('documents.doc', 'firstName cin')
+  ).populate('documents.doc')
 
   if (!collection) {
     return next(
@@ -38,11 +38,11 @@ exports.getCollection = async (req, res, next) => {
 }
 
 // @desc    create collection
-// @route   GET /api/collections
+// @route   POST /api/collections
 // @access  private
 exports.createCollection = async (req, res, next) => {
   const { documents } = req.body
-  let minlength = 1
+  let minlength = 50
 
   // check if ther is at least 50 docs
   if (documents.length < minlength) {
@@ -53,19 +53,18 @@ exports.createCollection = async (req, res, next) => {
       )
     )
   }
+  if (!req.body.title) {
+    req.body.title = Math.floor(Math.random() * 999999)
+  }
 
   const collection = await Collection.create(req.body)
 
-  // create new history
-  await History.create({
-    text: `${req.user.name} created new collection , ${documents.length} documents`,
-    collectionId: collection,
-    sent: true,
-    sentAt: Date.now(),
-  })
+  // notify user N2
+  notify(req, documents.length, collection._id)
 
   res.status(200).json({
     success: true,
+    message: 'collection envoyée avec succès',
     data: collection,
   })
 }
@@ -94,6 +93,7 @@ exports.updateCollection = async (req, res, next) => {
   )
   res.status(200).json({
     success: true,
+    message: 'collection modifiée avec succès',
     data: collection,
   })
 }
@@ -121,53 +121,19 @@ exports.deleteCollection = async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+    message: 'collection supprimée avec succès',
     data: {},
   })
 }
 
-// @desc    add collection to category
+// @desc    add category to collection
 // @route   put /api/collections/add/:collectionId/Categories/:categoryId
 // @access  private
-exports.addCollectionToCat = async (
-  req,
-  res,
-  next
-) => {
-  updateCatCollectios(
-    req.params.categoryId,
-    req.params.collectionId,
-    'push',
-    res,
-    next
+exports.addCateToColl = async (req, res, next) => {
+  const { authority, followed } = req.body
+  let category = await Category.findById(
+    req.params.categoryId
   )
-}
-
-// @desc    remove collection from category
-// @route   put /api/collections/remove/:collectionId/Categories/:categoryId
-// @access  private
-exports.removeCollectionFromCat = async (
-  req,
-  res,
-  next
-) => {
-  updateCatCollectios(
-    req.params.categoryId,
-    req.params.collectionId,
-    'pull',
-    res,
-    next
-  )
-}
-
-// update collections in category
-const updateCatCollectios = async (
-  catId,
-  colId,
-  action,
-  res,
-  next
-) => {
-  let category = await Category.findById(catId)
   // check for cat
   if (!category) {
     return next(
@@ -175,7 +141,9 @@ const updateCatCollectios = async (
     )
   }
 
-  let collection = await Collection.findById(colId)
+  let collection = await Collection.findById(
+    req.params.collectionId
+  ).populate('documents.doc')
 
   // check for collection
   if (!collection) {
@@ -184,61 +152,37 @@ const updateCatCollectios = async (
     )
   }
 
-  // check if remove or add collection
-
-  if (action === 'push') {
-    // add collection to category
-    category = await Category.findByIdAndUpdate(
-      catId,
-      {
-        $push: {
-          collections: collection,
-        },
-      }
-    )
-
-    // update collection to sorted
-    collection = await Collection.findByIdAndUpdate(
-      colId,
-      { status: 'sorted' },
-      { new: true, runValidators: true }
-    )
-
-    // update hisstory
-    await History.findOneAndUpdate(
-      { collectionId: collection._id },
-      {
-        sorted: true,
-        sortedAt: Date.now(),
-      },
-      { new: true, runValidators: true }
+  //
+  if (authority === '' || followed === '') {
+    return next(
+      new ErrorResponse(
+        `veuillez remplir toutes les entrées`,
+        404
+      )
     )
   }
 
-  if (action === 'pull') {
-    // remove collection from category
-    category = await Category.findByIdAndUpdate(
-      catId,
-      {
-        $pull: {
-          collections: collection._id,
-        },
-      }
-    )
+  // update collection to sorted
+  await Collection.findByIdAndUpdate(collection._id, {
+    $set: { status: 'sorted', authority, followed },
+  })
 
-    // update hisstory
-    await History.findOneAndUpdate(
-      { collectionId: collection._id },
-      {
-        sorted: false,
-        sortedAt: undefined,
-      },
-      { new: true, runValidators: true }
-    )
-  }
+  // update docs
+  const docs = collection.documents.map(
+    (doc) => doc.doc
+  )
+
+  await Document.updateMany(
+    { _id: { $in: docs } },
+    {
+      $set: { status: 'sorted', category: category },
+    },
+    { multi: true }
+  )
 
   res.status(200).json({
     success: true,
-    data: category,
+    message: 'collection envoyée avec succès',
+    data: collection,
   })
 }
