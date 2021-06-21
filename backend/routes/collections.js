@@ -5,7 +5,7 @@ const {
   deleteCollection,
   createCollection,
   updateCollection,
-  addCollectionToCat,
+  addCateToColl,
   removeCollectionFromCat,
 } = require('../controllers/collection')
 
@@ -58,18 +58,8 @@ router
   .route('/add/:collectionId/Categories/:categoryId')
   .put(
     protect,
-    authorize('service2', 'admin'),
-    addCollectionToCat
-  )
-
-router
-  .route(
-    '/remove/:collectionId/Categories/:categoryId'
-  )
-  .put(
-    protect,
-    authorize('service2', 'admin'),
-    removeCollectionFromCat
+    authorize('service2', 'service1', 'admin'),
+    addCateToColl
   )
 
 module.exports = router

@@ -1,16 +1,133 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Form,
   Row,
   Col,
   Button,
 } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import Message from '../components/Message'
+import { useMessageValue } from '../context/message'
+import { createNewDocument } from '../redux/actions/documentActions'
+import { DOCUMENT_CREATE_RESET } from '../redux/constants/documentConstants'
 
 const CreateDocument = () => {
-  return (
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [city, setCity] = useState('')
+  const [documentNum, setDocumentNum] = useState('')
+  const [cin, setCin] = useState('')
+  const [date, setDate] = useState(
+    new Date(Date.now()).toISOString().slice(0, 10)
+  )
+  const [province, setProvince] = useState('')
+  const [profession, setProfession] = useState('')
+  const [objet, setObjet] = useState('')
+  const [address, setAddress] = useState('')
+  const [resume, setResume] = useState('')
+
+  const history = useHistory()
+
+  const dispatch = useDispatch()
+
+  // load user Info
+  const { userInfo } = useSelector(
+    (state) => state.loginState
+  )
+
+  // load documents
+  const { loading, error, success } = useSelector(
+    (state) => state.newDocState
+  )
+
+  useEffect(() => {
+    const isAuthorised = (...roles) => {
+      return !userInfo
+        ? false
+        : roles.includes(userInfo.user.role)
+    }
+    if (
+      !userInfo ||
+      isAuthorised('admin', 'service1') === false
+    ) {
+      history.push('/')
+    }
+  }, [userInfo, history])
+
+  useEffect(() => {
+    if (success) {
+      dispatch({ type: DOCUMENT_CREATE_RESET })
+    }
+  }, [success, dispatch])
+
+  // reset inputs
+  const reset = () => {
+    setFirstName('')
+    setLastName('')
+    setCity('')
+    setDocumentNum('')
+    setCin('')
+    setProvince('')
+    setProfession('')
+    setObjet('')
+    setAddress('')
+    setResume('')
+  }
+
+  // message cntext
+  const { setMessage, setShowMessage, setVariant } =
+    useMessageValue()
+
+  // show message
+  useEffect(() => {
+    if (success) {
+      setMessage('nouveau document créé avec succès')
+      setVariant('success')
+      setShowMessage(true)
+      reset()
+    }
+    if (error) {
+      setMessage(error)
+      setVariant('danger')
+      setShowMessage(true)
+    }
+  }, [
+    error,
+    setMessage,
+    setShowMessage,
+    setVariant,
+    success,
+  ])
+
+  const handelSubmit = (e) => {
+    e.preventDefault()
+    dispatch(
+      createNewDocument({
+        firstName,
+        lastName,
+        city,
+        documentNum,
+        cin,
+        date,
+        province,
+        profession,
+        objet,
+        resume,
+        address,
+      })
+    )
+  }
+
+  return loading ? (
+    <>Loading ...</>
+  ) : (
     <>
       <h3>create new document</h3>
-      <Form>
+      {error && (
+        <Message variant="danger">{error}</Message>
+      )}
+      <Form onSubmit={handelSubmit}>
         <Row xs={1} md={1} xl={2}>
           <Col>
             <Row xs={1} md={2} xl={2}>
@@ -24,6 +141,10 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="nom"
+                    value={firstName}
+                    onChange={(e) =>
+                      setFirstName(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -37,6 +158,10 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="ville"
+                    value={city}
+                    onChange={(e) =>
+                      setCity(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -52,6 +177,10 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="Prenom"
+                    value={lastName}
+                    onChange={(e) =>
+                      setLastName(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -65,6 +194,10 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="Num de dossier"
+                    value={documentNum}
+                    onChange={(e) =>
+                      setDocumentNum(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -80,19 +213,28 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="CIN"
+                    value={cin}
+                    onChange={(e) =>
+                      setCin(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group className="m-2">
                   <Form.Label htmlFor="date">
-                    Date
+                    Date (yyyy-mm-dd)
                   </Form.Label>
                   <Form.Control
                     id="date"
+                    disabled
                     className="rounded-pill"
                     type="text"
                     placeholder="Date"
+                    value={date}
+                    onChange={(e) =>
+                      setDate(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -108,6 +250,10 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="Province"
+                    value={province}
+                    onChange={(e) =>
+                      setProvince(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -121,6 +267,10 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="fonction"
+                    value={profession}
+                    onChange={(e) =>
+                      setProfession(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -136,6 +286,10 @@ const CreateDocument = () => {
                     className="rounded-pill"
                     type="text"
                     placeholder="Objet"
+                    value={objet}
+                    onChange={(e) =>
+                      setObjet(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -152,7 +306,14 @@ const CreateDocument = () => {
                     placeholder="Address"
                     as="textarea"
                     rows={4}
-                    style={{ resize: 'none' }}
+                    style={{
+                      resize: 'vertical',
+                      maxHeight: '150px',
+                    }}
+                    value={address}
+                    onChange={(e) =>
+                      setAddress(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -166,7 +327,6 @@ const CreateDocument = () => {
             >
               <Col xs={8}>
                 <Form.Group
-                  controlId="exampleForm.ControlTextarea"
                   style={{
                     height: '94%',
                   }}
@@ -182,8 +342,13 @@ const CreateDocument = () => {
                     className="rounded"
                     style={{
                       height: '100%',
-                      resize: 'none',
+                      maxHeight: '624px',
+                      resize: 'vertical',
                     }}
+                    value={resume}
+                    onChange={(e) =>
+                      setResume(e.target.value)
+                    }
                   />
                 </Form.Group>
               </Col>
@@ -199,7 +364,7 @@ const CreateDocument = () => {
                 </Row>
                 <Row className="mt-3 w-100 justify-content-end">
                   <Button
-                    type="submit"
+                    onClick={reset}
                     variant="primary"
                     className="py-2 rounded-pill"
                   >

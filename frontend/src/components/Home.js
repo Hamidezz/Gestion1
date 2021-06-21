@@ -1,6 +1,14 @@
 import React from 'react'
-const Home = () => {
-  return <h1>content</h1>
+import Message from './Message'
+const Home = ({ children }) => {
+  return (
+    <main>
+      <h3>
+        <Message />
+      </h3>
+      {children}
+    </main>
+  )
 }
 
 export default Home

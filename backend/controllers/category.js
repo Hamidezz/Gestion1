@@ -1,5 +1,4 @@
 const Category = require('../models/Category')
-const Document = require('../models/Document')
 const Collection = require('../models/Collection')
 const History = require('../models/History')
 const ErrorResponse = require('../utils/ErrorResponse')
@@ -12,18 +11,21 @@ exports.getCategories = async (req, res, next) => {
     'collectionId',
     'documents'
   )
-  res.json({ success: true, data: Categories })
+  res.json({
+    success: true,
+    data: Categories,
+  })
 }
 
 // @desc    create Category
 // @route   POST /api/Categories
 // @access  private
 exports.createCategory = async (req, res, next) => {
-  const category = await Category.findOne({
+  const existCategory = await Category.findOne({
     name: req.body.name,
   })
 
-  if (category) {
+  if (existCategory) {
     return next(
       new ErrorResponse(
         `category with ${req.body.name} already taken , please try another name`,
@@ -32,13 +34,30 @@ exports.createCategory = async (req, res, next) => {
     )
   }
 
-  const createdCategory = await Category.create(
-    req.body
-  )
+  let category
+
+  try {
+    category = await Category.create(req.body)
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      return next(
+        new ErrorResponse(
+          'le nom de la catégorie est requis',
+          400
+        )
+      )
+    }
+  }
+
+  // create new history
+  await History.create({
+    category,
+  })
 
   res.status(200).json({
     success: true,
-    data: createdCategory,
+    message: 'nouveau catégorie créé avec succès',
+    data: category,
   })
 }
 
@@ -52,10 +71,7 @@ exports.getCategory = async (req, res, next) => {
 
   if (!category) {
     return next(
-      new ErrorResponse(
-        `category not found with id ${req.params.id}`,
-        404
-      )
+      new ErrorResponse(`catégorie introuvable`, 404)
     )
   }
 
@@ -88,6 +104,7 @@ exports.updateCategory = async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+    message: 'catégorie modifiée avec succès',
     data: category,
   })
 }
@@ -111,6 +128,7 @@ exports.deleteCategory = async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+    message: 'catégorie supprimée avec succès',
     data: {},
   })
 }
@@ -147,18 +165,9 @@ exports.placeCategory = async (req, res, next) => {
     { new: true, runValidators: true }
   )
 
-  // update hisstory
-  await History.findOneAndUpdate(
-    { collectionId: collection._id },
-    {
-      placed: true,
-      placedAt: Date.now(),
-    },
-    { new: true, runValidators: true }
-  )
-
   res.status(200).json({
     success: true,
+    message: 'catégorie placée avec succès',
     data: category,
   })
 }

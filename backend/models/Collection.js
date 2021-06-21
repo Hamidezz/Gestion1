@@ -2,6 +2,9 @@ const mongoose = require('mongoose')
 
 const CollectionSchema = mongoose.Schema(
   {
+    title: {
+      type: String,
+    },
     documents: [
       {
         doc: {
@@ -11,6 +14,30 @@ const CollectionSchema = mongoose.Schema(
         },
       },
     ],
+    authority: {
+      type: String,
+      maxlength: [
+        15,
+        'authority cannot be more than 15 characters',
+      ],
+    },
+    followed: {
+      type: String,
+      maxlength: [
+        15,
+        'followed cannot be more than 15 characters',
+      ],
+    },
+    recipient: {
+      type: String,
+      maxlength: [
+        15,
+        'recipient cannot be more than 15 characters',
+      ],
+    },
+    placedAt: {
+      type: Date,
+    },
     historyId: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'History',
@@ -21,11 +48,11 @@ const CollectionSchema = mongoose.Schema(
       default: 'new',
     },
   },
+  { timestamps: true },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
-  { timestamps: true }
+  }
 )
 
 // revers populate wih virtuals
@@ -36,20 +63,26 @@ CollectionSchema.virtual('history', {
   justOne: false,
 })
 
-// Cascad delete collection from category when a collection is deleted
-CollectionSchema.pre('remove', async function (next) {
-  await this.model('Category').updateOne(
-    {
-      collections: this._id,
-    },
-    {
-      $pull: {
-        collections: this._id,
-      },
-    }
+// update documents before saving new collection
+CollectionSchema.pre('save', async function (next) {
+  const docs = this.documents.map((doc) => doc.doc)
+  await this.model('Document').updateMany(
+    { _id: { $in: docs } },
+    { $set: { status: 'pending' } },
+    { multi: true }
   )
   next()
 })
+// update documents before updating collection to placed
+// CollectionSchema.pre('findByIdAndUpdate', async function (next) {
+//   const docs = this.documents.map((doc) => doc.doc)
+//   await this.model('Document').updateMany(
+//     { _id: { $in: docs } },
+//     { $set: { status: 'pending' } },
+//     { multi: true }
+//   )
+//   next()
+// })
 
 module.exports = mongoose.model(
   'Collection',

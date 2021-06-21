@@ -1,16 +1,159 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import '../app.css'
+import {
+  MdDashboard,
+  //MdNotificationsActive,
+} from 'react-icons/md'
+import { IoMdPaper } from 'react-icons/io'
+import { IoLibrarySharp } from 'react-icons/io5'
+import { BsCollection } from 'react-icons/bs'
+import { MdReorder } from 'react-icons/md'
+import { FaHistory } from 'react-icons/fa'
+import Notification from './Toast'
+import { useSelector } from 'react-redux'
+import { useSideBarValue } from '../context/sideBar'
 
+// side barr
+const SideBar = () => {
+  const { show, setShow } = useSideBarValue()
+  // load user Info
+  const { userInfo } = useSelector(
+    (state) => state.loginState
+  )
+
+  const isAuthorised = (...roles) => {
+    return !userInfo
+      ? false
+      : roles.includes(userInfo.user.role)
+  }
+
+  return (
+    <div className={`sidebar ${show ? 'open' : ''}`}>
+      <div className="sidebar-inner">
+        <div className="sidebar-layout">
+          <div className="sidebar-header">
+            GED For documents
+          </div>
+          <div style={{ flexGrow: '1' }}>
+            <nav className="sidebar-menu">
+              <ul>
+                <MenuItem
+                  title="Dashboard"
+                  to="/"
+                  Icon={<MdDashboard />}
+                />
+                {isAuthorised('admin') && (
+                  <MenuItem
+                    title="historique"
+                    to="history"
+                    Icon={<FaHistory />}
+                  />
+                )}
+              </ul>
+            </nav>
+            <nav className="sidebar-menu open">
+              <ul>
+                {isAuthorised('service1') && (
+                  <>
+                    <MenuItem
+                      title="documents"
+                      Icon={<IoMdPaper />}
+                      slideDown={true}
+                      subItems={[
+                        {
+                          itemTitle: 'create document',
+                          linkTo: '/new_document',
+                        },
+                        {
+                          itemTitle: 'view documents',
+                          linkTo: '/documents',
+                        },
+                      ]}
+                    />
+                  </>
+                )}
+                {isAuthorised('service2', 'admin') && (
+                  <MenuItem
+                    title="Categories"
+                    Icon={<IoLibrarySharp />}
+                    slideDown={true}
+                    subItems={[
+                      {
+                        itemTitle: 'view categories',
+                        linkTo: '/categories',
+                      },
+                      {
+                        itemTitle: 'create category',
+                        linkTo: '/new_category',
+                      },
+                    ]}
+                  />
+                )}
+                {isAuthorised(
+                  'service1',
+                  'service2',
+                  'admin'
+                ) && (
+                  <MenuItem
+                    title="Collections"
+                    Icon={<BsCollection />}
+                    slideDown={true}
+                    subItems={[
+                      {
+                        itemTitle: 'documents reçus',
+                        linkTo: '/collections',
+                      },
+                    ]}
+                  />
+                )}
+                {isAuthorised('service3', 'admin') && (
+                  <MenuItem
+                    title="Orders"
+                    Icon={<MdReorder />}
+                    slideDown={true}
+                    subItems={[
+                      {
+                        itemTitle: 'all orders',
+                        linkTo: '/orders',
+                      },
+                      {
+                        itemTitle: 'place order',
+                        linkTo: '/place_orders',
+                      },
+                    ]}
+                  />
+                )}
+                {/* {isAuthorised('service2') && ( */}
+                <Notification />
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div
+        className="overlay"
+        role="button"
+        tabIndex="0"
+        aria-label="overlay"
+        onClick={() => setShow(!show)}
+      ></div>
+    </div>
+  )
+}
+
+export default SideBar
+
+// menu item
 const MenuItem = ({
   Icon,
+  to,
   title,
   slideDown,
-  notification,
   subItems,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
-
+  // const { show, setShow } = useSideBarValue()
   const toggleMenu = () => {
     if (!slideDown) return
     setMenuOpen(!menuOpen)
@@ -19,47 +162,54 @@ const MenuItem = ({
   return (
     <li style={{ fontSize: '15px' }}>
       <div
-        class="sidebar-inner-item"
-        tabindex="0"
+        className="sidebar-inner-item"
+        tabIndex="0"
         role="button"
         onClick={() => toggleMenu()}
       >
-        <span class="icon-wrapper">
-          <span class="icon">{Icon}</span>
+        <span className="icon-wrapper">
+          <span className="icon">{Icon}</span>
         </span>
-        <span class="item-content">{title}</span>
-        {notification && (
-          <span class="suffix">
-            <span class="badge">3</span>
-          </span>
+        {to ? (
+          <Link
+            to={to}
+            className="text-light text-decoration-none item-content"
+          >
+            {title}
+          </Link>
+        ) : (
+          <span className="item-content">{title}</span>
         )}
+
         {slideDown && (
-          <span class="arrow-wrapper">
+          <span className="arrow-wrapper">
             <span
-              class={`arrow ${menuOpen ? 'open' : ''}`}
+              className={`arrow ${
+                menuOpen ? 'open' : ''
+              }`}
             ></span>
           </span>
         )}
       </div>
       {slideDown && (
         <div
-          class={`menu-slidedown ${
+          className={`menu-slidedown ${
             menuOpen ? 'open' : ''
           }`}
         >
           <div>
             <ul>
               {subItems.map(
-                ({ itemTitle, linkTo }) => (
-                  <li class="menu-item">
+                ({ itemTitle, linkTo }, i) => (
+                  <li key={i} className="menu-item">
                     <div
-                      class="inner-item"
-                      tabindex="0"
+                      className="inner-item"
+                      tabIndex="0"
                       role="button"
                     >
                       <Link
                         to={`${linkTo}`}
-                        class="item-content"
+                        className="item-content"
                       >
                         {itemTitle}
                       </Link>
@@ -74,131 +224,3 @@ const MenuItem = ({
     </li>
   )
 }
-
-const SideBar = () => {
-  const [sideBarOpen, setSideBarOpen] = useState(false)
-
-  return (
-    <div
-      className={`sidebar ${
-        sideBarOpen ? 'open' : ''
-      }`}
-    >
-      <div class="sidebar-inner">
-        <div class="sidebar-layout">
-          <div class="sidebar-header">
-            GED For documents
-          </div>
-          <div style={{ flexGrow: '1' }}>
-            <nav class="sidebar-menu">
-              <ul>
-                <MenuItem
-                  title="Dashboard"
-                  Icon={
-                    <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      stroke-width="0"
-                      viewBox="0 0 496 512"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm141.4 389.4c-37.8 37.8-88 58.6-141.4 58.6s-103.6-20.8-141.4-58.6C68.8 359.6 48 309.4 48 256s20.8-103.6 58.6-141.4C144.4 76.8 194.6 56 248 56s103.6 20.8 141.4 58.6c37.8 37.8 58.6 88 58.6 141.4s-20.8 103.6-58.6 141.4zM328 164c-25.7 0-55.9 16.9-59.9 42.1-1.7 11.2 11.5 18.2 19.8 10.8l9.5-8.5c14.8-13.2 46.2-13.2 61 0l9.5 8.5c8.5 7.4 21.6.3 19.8-10.8-3.8-25.2-34-42.1-59.7-42.1zm-160 60c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm194.4 64H133.6c-8.2 0-14.5 7-13.5 15 7.5 59.2 58.9 105 121.1 105h13.6c62.2 0 113.6-45.8 121.1-105 1-8-5.3-15-13.5-15z"></path>
-                    </svg>
-                  }
-                />
-                <MenuItem
-                  title="Notification"
-                  notification={true}
-                  Icon={
-                    <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      stroke-width="0"
-                      viewBox="0 0 496 512"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm141.4 389.4c-37.8 37.8-88 58.6-141.4 58.6s-103.6-20.8-141.4-58.6C68.8 359.6 48 309.4 48 256s20.8-103.6 58.6-141.4C144.4 76.8 194.6 56 248 56s103.6 20.8 141.4 58.6c37.8 37.8 58.6 88 58.6 141.4s-20.8 103.6-58.6 141.4zM328 164c-25.7 0-55.9 16.9-59.9 42.1-1.7 11.2 11.5 18.2 19.8 10.8l9.5-8.5c14.8-13.2 46.2-13.2 61 0l9.5 8.5c8.5 7.4 21.6.3 19.8-10.8-3.8-25.2-34-42.1-59.7-42.1zm-160 60c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm194.4 64H133.6c-8.2 0-14.5 7-13.5 15 7.5 59.2 58.9 105 121.1 105h13.6c62.2 0 113.6-45.8 121.1-105 1-8-5.3-15-13.5-15z"></path>
-                    </svg>
-                  }
-                />
-              </ul>
-            </nav>
-            <nav class="sidebar-menu open">
-              <ul>
-                <MenuItem
-                  title="documents"
-                  Icon={
-                    <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      stroke-width="0"
-                      viewBox="0 0 496 512"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm141.4 389.4c-37.8 37.8-88 58.6-141.4 58.6s-103.6-20.8-141.4-58.6C68.8 359.6 48 309.4 48 256s20.8-103.6 58.6-141.4C144.4 76.8 194.6 56 248 56s103.6 20.8 141.4 58.6c37.8 37.8 58.6 88 58.6 141.4s-20.8 103.6-58.6 141.4zM328 164c-25.7 0-55.9 16.9-59.9 42.1-1.7 11.2 11.5 18.2 19.8 10.8l9.5-8.5c14.8-13.2 46.2-13.2 61 0l9.5 8.5c8.5 7.4 21.6.3 19.8-10.8-3.8-25.2-34-42.1-59.7-42.1zm-160 60c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm194.4 64H133.6c-8.2 0-14.5 7-13.5 15 7.5 59.2 58.9 105 121.1 105h13.6c62.2 0 113.6-45.8 121.1-105 1-8-5.3-15-13.5-15z"></path>
-                    </svg>
-                  }
-                  slideDown={true}
-                  notification={true}
-                  subItems={[
-                    {
-                      itemTitle: 'create document',
-                      linkTo: '/new_document',
-                    },
-                    {
-                      itemTitle: 'view documents',
-                      linkTo: '/new_document',
-                    },
-                  ]}
-                />
-                <MenuItem
-                  title="Categories"
-                  Icon={
-                    <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      stroke-width="0"
-                      viewBox="0 0 496 512"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm141.4 389.4c-37.8 37.8-88 58.6-141.4 58.6s-103.6-20.8-141.4-58.6C68.8 359.6 48 309.4 48 256s20.8-103.6 58.6-141.4C144.4 76.8 194.6 56 248 56s103.6 20.8 141.4 58.6c37.8 37.8 58.6 88 58.6 141.4s-20.8 103.6-58.6 141.4zM328 164c-25.7 0-55.9 16.9-59.9 42.1-1.7 11.2 11.5 18.2 19.8 10.8l9.5-8.5c14.8-13.2 46.2-13.2 61 0l9.5 8.5c8.5 7.4 21.6.3 19.8-10.8-3.8-25.2-34-42.1-59.7-42.1zm-160 60c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm194.4 64H133.6c-8.2 0-14.5 7-13.5 15 7.5 59.2 58.9 105 121.1 105h13.6c62.2 0 113.6-45.8 121.1-105 1-8-5.3-15-13.5-15z"></path>
-                    </svg>
-                  }
-                  slideDown={true}
-                  notification={true}
-                  subItems={[
-                    {
-                      itemTitle: 'view categories',
-                      linkTo: '/new_category',
-                    },
-                    {
-                      itemTitle: 'create category',
-                      linkTo: '/new_category',
-                    },
-                  ]}
-                />
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </div>
-      <div
-        class="overlay"
-        role="button"
-        tabindex="0"
-        aria-label="overlay"
-        onClick={() => setSideBarOpen(!sideBarOpen)}
-      ></div>
-    </div>
-  )
-}
-
-export default SideBar

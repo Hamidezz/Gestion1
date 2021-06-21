@@ -31,7 +31,7 @@ router
   )
   .post(
     protect,
-    authorize('service2', 'admin'),
+    authorize('service2', 'service1', 'admin'),
     createCategory
   )
 
