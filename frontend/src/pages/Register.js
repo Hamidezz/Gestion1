@@ -19,6 +19,7 @@ const Register = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [role, setRole] = useState('')
   const [confirmPassword, setConfirmPassword] =
     useState('')
   const [message, setMessage] = useState(null)
@@ -35,7 +36,14 @@ const Register = () => {
   )
 
   useEffect(() => {
-    if (userInfo) {
+    const isAuthorised = (...roles) => {
+      return !userInfo
+        ? false
+        : roles.includes(userInfo.user.role)
+    }
+    if (!userInfo || isAuthorised('admin') === false) {
+      history.push('/')
+    } else {
       history.push(redirect)
     }
   }, [userInfo, history, redirect])
@@ -48,7 +56,7 @@ const Register = () => {
       )
     } else {
       setMessage(null)
-      dispatch(register(name, email, password))
+      dispatch(register(name, email, password, role))
     }
   }
 
@@ -56,7 +64,7 @@ const Register = () => {
     <>Loading ...</>
   ) : (
     <>
-      <h1>Sign Up</h1>
+      <h1>Register new user </h1>
       <FormContainer>
         {error && (
           <Message variant="danger">{error}</Message>
@@ -84,6 +92,24 @@ const Register = () => {
                 setEmail(e.target.value)
               }
             ></Form.Control>
+          </Form.Group>
+          <Form.Group controlId="email">
+            <Form.Label>role</Form.Label>
+            <Form.Control
+              as="select"
+              value="service1"
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="service1">
+                service1
+              </option>
+              <option value="service2">
+                service2
+              </option>
+              <option value="service3">
+                service3
+              </option>
+            </Form.Control>
           </Form.Group>
 
           <Form.Group controlId="password">
