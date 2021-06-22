@@ -8,8 +8,6 @@ import {
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
   USER_REGISTER_FAIL,
-  USER_DETAILS_RESET,
-  USER_LIST_RESET,
 } from '../constants/userConstants'
 
 export const login =
@@ -55,8 +53,6 @@ export const logout =
   (history) => async (dispatch) => {
     localStorage.removeItem('userInfo')
     dispatch({ type: USER_LOGOUT })
-    dispatch({ type: USER_DETAILS_RESET })
-    dispatch({ type: USER_LIST_RESET })
     history.push('/')
   }
 

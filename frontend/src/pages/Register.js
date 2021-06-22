@@ -34,14 +34,13 @@ const Register = () => {
   const { loading, error, userInfo } = useSelector(
     (state) => state.registerState
   )
-
+  const isAuthorised = (...roles) => {
+    return !userInfo
+      ? false
+      : roles.includes(userInfo.user.role)
+  }
   useEffect(() => {
-    const isAuthorised = (...roles) => {
-      return !userInfo
-        ? false
-        : roles.includes(userInfo.user.role)
-    }
-    if (!userInfo || isAuthorised('admin') === false) {
+    if (!userInfo) {
       history.push('/')
     } else {
       history.push(redirect)
@@ -100,7 +99,10 @@ const Register = () => {
               value="service1"
               onChange={(e) => setRole(e.target.value)}
             >
-              <option value="admin">admin</option>
+              {isAuthorised('admin') && (
+                <option value="admin">admin</option>
+              )}
+
               <option value="service1">
                 service1
               </option>
