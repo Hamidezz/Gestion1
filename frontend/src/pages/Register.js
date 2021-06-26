@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+} from 'react'
 import {
   Link,
   useLocation,
@@ -34,18 +38,21 @@ const Register = () => {
   const { loading, error, userInfo } = useSelector(
     (state) => state.registerState
   )
-  const isAuthorised = (...roles) => {
-    return !userInfo
-      ? false
-      : roles.includes(userInfo.user.role)
-  }
+  const isAuthorised = useCallback(
+    (...roles) => {
+      return !userInfo
+        ? false
+        : roles.includes(userInfo.user.role)
+    },
+    [userInfo]
+  )
   useEffect(() => {
-    if (!userInfo) {
+    if (!userInfo && !isAuthorised('admin')) {
       history.push('/')
     } else {
       history.push(redirect)
     }
-  }, [userInfo, history, redirect])
+  }, [userInfo, history, redirect, isAuthorised])
 
   const submitHandler = (e) => {
     e.preventDefault()
