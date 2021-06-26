@@ -13,7 +13,6 @@ import {
 } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/FormContainer'
-import Message from '../components/Message'
 import { register } from '../redux/actions/userActions'
 
 const Register = () => {
