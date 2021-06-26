@@ -11,6 +11,7 @@ import {
   Col,
   Form,
   Row,
+  Alert,
 } from 'react-bootstrap'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
@@ -37,7 +38,7 @@ const Login = () => {
 
   const submitHandler = (e) => {
     e.preventDefault()
-    dipatch(login(email, password))
+    dipatch(login(email, password, history))
   }
 
   return loading ? (
@@ -47,7 +48,7 @@ const Login = () => {
       <h1>Sign In</h1>
       <FormContainer>
         {error && (
-          <Message variant="danger">{error}</Message>
+          <Alert variant="danger">{error}</Alert>
         )}
         <Form
           onSubmit={submitHandler}

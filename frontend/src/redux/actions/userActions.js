@@ -11,7 +11,7 @@ import {
 } from '../constants/userConstants'
 
 export const login =
-  (email, password) => async (dispatch) => {
+  (email, password, history) => async (dispatch) => {
     try {
       dispatch({
         type: USER_LOGIN_REQUEST,
@@ -38,6 +38,7 @@ export const login =
         'userInfo',
         JSON.stringify(data)
       )
+      history.push('/')
     } catch (error) {
       dispatch({
         type: USER_LOGIN_FAIL,
@@ -57,7 +58,8 @@ export const logout =
   }
 
 export const register =
-  (name, email, password) => async (dispatch) => {
+  (name, email, password, role, history) =>
+  async (dispatch) => {
     try {
       dispatch({
         type: USER_REGISTER_REQUEST,
@@ -71,7 +73,7 @@ export const register =
 
       const { data } = await axios.post(
         `${SERVER_URL}/api/auth/register`,
-        { name, email, password },
+        { name, email, password, role },
         config
       )
 
@@ -89,6 +91,7 @@ export const register =
         'userInfo',
         JSON.stringify(data)
       )
+      history.push('/')
     } catch (error) {
       dispatch({
         type: USER_REGISTER_FAIL,

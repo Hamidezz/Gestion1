@@ -9,7 +9,8 @@
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"yarn server\" \"yarn client\""
+    "data:import": "node backend/seeder.js",
+    "dev": "concurrently \"yarn server\" \"yarn data:import\" \"yarn client\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
