@@ -24,13 +24,18 @@ const UserSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['service1', 'service2', 'service3'],
+      enum: [
+        'service1',
+        'service2',
+        'service3',
+        'admin',
+      ],
       default: 'service1',
     },
     password: {
       type: String,
       required: [true, 'please add a password'],
-      minlength: 6,
+      minlength: [6, 'msg li bghiti '],
       select: false,
     },
   },

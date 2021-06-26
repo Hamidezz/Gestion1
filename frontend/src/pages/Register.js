@@ -9,6 +9,7 @@ import {
   Col,
   Form,
   Row,
+  Alert,
 } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/FormContainer'
@@ -55,7 +56,9 @@ const Register = () => {
       )
     } else {
       setMessage(null)
-      dispatch(register(name, email, password, role))
+      dispatch(
+        register(name, email, password, role, history)
+      )
     }
   }
 
@@ -66,7 +69,7 @@ const Register = () => {
       <h1>Register new user </h1>
       <FormContainer>
         {error && (
-          <Message variant="danger">{error}</Message>
+          <Alert variant="danger">{error}</Alert>
         )}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="email">
@@ -96,7 +99,7 @@ const Register = () => {
             <Form.Label>role</Form.Label>
             <Form.Control
               as="select"
-              value="service1"
+              value={role}
               onChange={(e) => setRole(e.target.value)}
             >
               {isAuthorised('admin') && (

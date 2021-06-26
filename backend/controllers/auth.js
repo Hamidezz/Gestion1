@@ -19,7 +19,19 @@ exports.register = async (req, res, next) => {
     )
   }
 
-  const user = await User.create(req.body)
+  // const user = await User.create(req.body)
+
+  let user
+  try {
+    user = await User.create(req.body)
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      const message = Object.values(err.errors).map(
+        (val) => val.message
+      )
+      return next(new ErrorResponse(message, 400))
+    }
+  }
 
   if (user) {
     res.status(201).json({
