@@ -13,7 +13,6 @@ import {
   Row,
   Alert,
 } from 'react-bootstrap'
-import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 
 const Login = () => {

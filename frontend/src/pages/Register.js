@@ -35,8 +35,11 @@ const Register = () => {
 
   const dispatch = useDispatch()
 
-  const { loading, error, userInfo } = useSelector(
+  const { loading, error} = useSelector(
     (state) => state.registerState
+  )
+  const {userInfo } = useSelector(
+    (state) => state.loginState
   )
   const isAuthorised = useCallback(
     (...roles) => {
@@ -47,12 +50,10 @@ const Register = () => {
     [userInfo]
   )
   useEffect(() => {
-    if (!userInfo && !isAuthorised('admin')) {
+    if (!userInfo  || isAuthorised('admin') === false) {
       history.push('/')
-    } else {
-      history.push(redirect)
     }
-  }, [userInfo, history, redirect, isAuthorised])
+  }, [userInfo, history,isAuthorised])
 
   const submitHandler = (e) => {
     e.preventDefault()
