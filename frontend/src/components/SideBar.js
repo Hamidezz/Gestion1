@@ -54,11 +54,7 @@ const SideBar = () => {
             </nav>
             <nav className="sidebar-menu open">
               <ul>
-<<<<<<< HEAD
                 {isAuthorised('service1','admin') && (
-=======
-                {isAuthorised('service1', 'admin') && (
->>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
                   <>
                     <MenuItem
                       title="Documents"
