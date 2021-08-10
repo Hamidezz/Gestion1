@@ -242,7 +242,15 @@ button:focus {
 .header .notification {
   position: relative;
 }
+<<<<<<< HEAD
 /*.header .notification:before {
+=======
+.header .notification svg {
+  width: 35px !important;
+  height: 35px !important;
+}
+/* .header .notification:before {
+>>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
   content: '0';
   position: absolute;
   top: -5px;
@@ -257,7 +265,7 @@ button:focus {
   align-items: center;
   font-size: 11px;
   font-weight: 700;
-}
+} */
 
 .tabs-wrapper a {
   color: #fff;
