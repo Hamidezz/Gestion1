@@ -13,6 +13,7 @@ import { useMessageValue } from '../context/message'
 
 const ViewDocuments = () => {
   const [activeTab, setActiveTab] = useState('NEW')
+  
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -138,20 +139,10 @@ const ViewDocuments = () => {
             filterBy="NEW"
             documents={documents}
             userInfo={userInfo}
+            ondeleteDocument={ondeleteDocument}
           />
         </Tab>
-        <Tab eventKey="PENDING" title="PENDING">
-          <Documents
-            filterBy="PENDING"
-            documents={documents}
-          />
-        </Tab>
-        <Tab eventKey="FINISHED" title="FINISHED">
-          <Documents
-            filterBy="FINISHED"
-            documents={documents}
-          />
-        </Tab>
+        
         <Tab eventKey="ALL" title="ALL">
           <Documents
             filterBy="ALL"
@@ -160,6 +151,7 @@ const ViewDocuments = () => {
           />
         </Tab>
       </Tabs>
+      
     </>
   )
 }

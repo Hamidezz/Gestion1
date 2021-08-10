@@ -99,6 +99,7 @@ const CateModal = ({
           followed
         )
       )
+      handleClose()
     }
   }
 

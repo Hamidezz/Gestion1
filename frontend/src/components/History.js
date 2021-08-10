@@ -23,15 +23,15 @@ const History = ({
                 <>
                   <th>document nombre</th>
                   <th>objet</th>
-                  <th>nom/Prenom</th>
+                  <th>nom / Prenom</th>
                   <th>cin</th>
-                  <th>ville/Province</th>
+                  <th>ville / Province</th>
                   <th>créé à</th>
                 </>
               )}
               {filterBy === 'categories' && (
                 <>
-                  <th>nom de catégory</th>
+                  <th>nom de catégorie</th>
                   <th>créé à</th>
                 </>
               )}
@@ -53,7 +53,7 @@ const History = ({
                         {hs.document.documentNum}
                       </td>
                       <td className="align-middle">
-                        {hs.document.object}
+                        {hs.document.objet}
                       </td>
                       <td className="align-middle">
                         {hs.document.firstName}{' '}

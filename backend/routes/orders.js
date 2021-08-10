@@ -17,12 +17,12 @@ router
   .route('/')
   .get(
     protect,
-    authorize('service1', 'service2', 'admin'),
+    authorize('service3', 'admin'),
     getOrders
   )
   .post(
     protect,
-    authorize('service1', 'admin'),
+    authorize('service3', 'admin'),
     createOrder
   )
 
@@ -30,7 +30,7 @@ router
   .route('/:id')
   .get(
     protect,
-    authorize('service1', 'service2', 'admin'),
+    authorize('service3', 'admin'),
     getOrder
   )
 

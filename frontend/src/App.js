@@ -20,12 +20,14 @@ import './bootstrap.min.css'
 import { SocketProvider } from './context/socket'
 import { MessageProvider } from './context/message'
 import { SideBarProvider } from './context/sideBar'
+import { PdfProvider } from './context/pdfGenerator'
 
 const App = () => {
   return (
     <SocketProvider>
       <div className="App">
         <Router>
+          <PdfProvider>
           <SideBarProvider>
             <SideBar />
 
@@ -84,6 +86,7 @@ const App = () => {
               </Home>
             </MessageProvider>
           </SideBarProvider>
+          </PdfProvider>
         </Router>
       </div>
     </SocketProvider>

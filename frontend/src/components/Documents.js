@@ -5,44 +5,65 @@ import {
   Row,
   Alert,
 } from 'react-bootstrap'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addDocsToCollection } from '../redux/actions/collectionActions'
 import { FaPenAlt, FaTrashAlt } from 'react-icons/fa'
 import {
   GrCheckbox,
   GrCheckboxSelected,
 } from 'react-icons/gr'
-import Message from './Message'
 import { useSocketValue } from '../context/socket'
 import { Link } from 'react-router-dom'
+import { usePdfGenerator } from '../context/pdfGenerator'
 const Documents = ({
   documents,
   filterBy,
-  userInfo,
   ondeleteDocument,
 }) => {
   // socket context
   const socket = useSocketValue()
+  const { generatePdf } = usePdfGenerator()
 
   // change min length of documents to send
-  const minDocsLength = 50
+  const minDocsLength = 2
 
   const [docs, setDocs] = useState([])
+  const [pdfDocs, setPdfDocs] = useState([])
   const dispatch = useDispatch()
 
   // check if id is checked
   const isChecked = (documentId) =>
     docs.some(({ doc }) => doc === documentId)
 
+  // load user info
+  const { userInfo } = useSelector(
+    (state) => state.loginState
+  )
+
+  //Check if user is authorized to do certain thing
+  const isAuthorised =  (...roles) => {
+    return !userInfo
+    ? false 
+    : roles.includes(userInfo.user.role)
+  }
+  
   // toggle check
-  const toggleCheck = (document) => {
-    if (isChecked(document.doc)) {
+  const toggleCheck = ({ doc }) => {
+    if (isChecked(doc._id)) {
       const newDocs = docs.filter(
-        ({ doc }) => doc !== document.doc
+        (d) => d.doc !== doc._id
+      )
+      const newPdfDocs = pdfDocs.filter(
+          (d) => d._id !== doc._id
       )
       setDocs(newDocs)
-    } else {
-      setDocs((prevState) => [...prevState, document])
+      setPdfDocs(newPdfDocs)
+    }else{
+      setDocs((prevState) => [
+        ...prevState,
+        { doc: doc._id },
+      ])
+      setPdfDocs((prevState) => [...prevState, doc])
     }
   }
 
@@ -63,10 +84,10 @@ const Documents = ({
 
   return (
     <>
-      {filteredDocuments.length === 0 ? (
-        <Message>
+      {filteredDocuments?.length === 0 ? (
+        <Alert variant="info">
           no {filterBy.toLowerCase()} documents
-        </Message>
+        </Alert>
       ) : (
         <>
           <Table
@@ -77,16 +98,14 @@ const Documents = ({
           >
             <thead>
               <tr>
-                {userInfo?.role !== 'service1' &&
-                  filterBy.toLowerCase() === 'new' && (
-                    <th></th>
-                  )}
-                <th>document nombre</th>
+                {isAuthorised('service1', 'admin') &&
+                ['new', 'all'].includes(
+                  filterBy.toLowerCase()
+                ) && <th></th>}
+                <th> Numéro du document</th>
+                <th>Date</th>
                 <th>objet</th>
-                <th>nom/Prenom</th>
-                <th>cin</th>
-                <th>ville/Province</th>
-                <th>fonction</th>
+                <th>Resumé</th>
                 {filterBy.toLowerCase() === 'all' && (
                   <th
                     style={{
@@ -107,14 +126,14 @@ const Documents = ({
                       : ''
                   }`}
                 >
-                  {userInfo?.role !== 'service1' &&
-                    filterBy.toLowerCase() ===
-                      'new' && (
+                  {['new', 'all'].includes(
+                    filterBy.toLowerCase()
+                      ) && (
                       <td
                         className="align-middle text-center"
                         onClick={() =>
                           toggleCheck({
-                            doc: document._id,
+                            doc: document,
                           })
                         }
                         style={{
@@ -143,20 +162,13 @@ const Documents = ({
                     {document.documentNum}
                   </td>
                   <td className="align-middle">
-                    {document.object}
+                    {document.date}
                   </td>
                   <td className="align-middle">
-                    {document.firstName}{' '}
-                    {document.lastName}
+                    {document.objet}
                   </td>
                   <td className="align-middle">
-                    {document.cin}
-                  </td>
-                  <td className="align-middle">
-                    {document.city} {document.province}
-                  </td>
-                  <td className="align-middle">
-                    {document.profession}
+                    {document.resume}
                   </td>
                   {filterBy.toLowerCase() ===
                     'all' && (
@@ -185,8 +197,10 @@ const Documents = ({
               ))}
             </tbody>
           </Table>
-          {filterBy.toLowerCase() === 'new' &&
-            userInfo?.role !== 'service1' && (
+          {['new', 'all'].includes(
+            filterBy.toLowerCase()
+          ) &&
+          isAuthorised('service1', 'admin') && (
               <Row className="justify-content-end mt-3">
                 <Alert variant="light">
                   vous ne pouvez pas envoyer moins de{' '}
@@ -198,6 +212,16 @@ const Documents = ({
                   sélectionné
                 </Alert>
                 <Button
+                onClick={() => generatePdf(pdfDocs)}
+                disabled={
+                  pdfDocs.length > 0 ? false : true
+                }
+                variant="dark"
+                className="btn h-100 py-2 rounded-pill mr-2"
+                >
+                  export as pdf
+                </Button>
+                <Button
                   onClick={sendCollection}
                   variant="dark"
                   disabled={
@@ -207,7 +231,7 @@ const Documents = ({
                   }
                   className="btn h-100 py-2 rounded-pill"
                 >
-                  send
+                  send 
                 </Button>
               </Row>
             )}

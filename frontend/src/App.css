@@ -242,11 +242,7 @@ button:focus {
 .header .notification {
   position: relative;
 }
-.header .notification svg {
-  width: 35px !important;
-  height: 35px !important;
-}
-.header .notification:before {
+/*.header .notification:before {
   content: '0';
   position: absolute;
   top: -5px;

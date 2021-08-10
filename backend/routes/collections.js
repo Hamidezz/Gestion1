@@ -22,7 +22,7 @@ router
   .route('/')
   .get(
     protect,
-    authorize('service1', 'service2', 'admin'),
+    authorize('service1', 'service2', 'service3', 'admin'),
     getCollections
   )
   .post(
@@ -58,7 +58,7 @@ router
   .route('/add/:collectionId/Categories/:categoryId')
   .put(
     protect,
-    authorize('service2', 'service1', 'admin'),
+    authorize('service2', 'service1', 'service3', 'admin'),
     addCateToColl
   )
 

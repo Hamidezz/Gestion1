@@ -42,13 +42,13 @@ exports.getCollection = async (req, res, next) => {
 // @access  private
 exports.createCollection = async (req, res, next) => {
   const { documents } = req.body
-  let minlength = 50
+  let minlength = 2
 
   // check if ther is at least 50 docs
   if (documents.length < minlength) {
     return next(
       new ErrorResponse(
-        `please selct mor than ${minlength} docs, ${documents.length} slected`,
+        `S'il vous Plait  voyez séléctionner plus de  ${minlength} docs, ${documents.length} slected`,
         400
       )
     )

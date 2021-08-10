@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import '../app.css'
+import '../App.css'
 import {
   MdDashboard,
   //MdNotificationsActive,
@@ -33,7 +33,7 @@ const SideBar = () => {
       <div className="sidebar-inner">
         <div className="sidebar-layout">
           <div className="sidebar-header">
-            GED For documents
+                    <center>GED For Documents </center>
           </div>
           <div style={{ flexGrow: '1' }}>
             <nav className="sidebar-menu">
@@ -54,19 +54,19 @@ const SideBar = () => {
             </nav>
             <nav className="sidebar-menu open">
               <ul>
-                {isAuthorised('service1') && (
+                {isAuthorised('service1','admin') && (
                   <>
                     <MenuItem
-                      title="documents"
+                      title="Documents"
                       Icon={<IoMdPaper />}
                       slideDown={true}
                       subItems={[
                         {
-                          itemTitle: 'create document',
+                          itemTitle: 'Création du document',
                           linkTo: '/new_document',
                         },
                         {
-                          itemTitle: 'view documents',
+                          itemTitle: 'Document affiché',
                           linkTo: '/documents',
                         },
                       ]}

@@ -89,16 +89,18 @@ const Collection = ({
             >
               <thead>
                 <tr>
-                  <th>document nombre</th>
+                  <th> Numéro du document </th>
                   <th>objet</th>
                   <th>nom/Prenom</th>
                   <th>cin</th>
                   <th>ville/Province</th>
                   <th>fonction</th>
+                  <th>Tel</th>
+                  <th>Resume</th>
                 </tr>
               </thead>
               <tbody>
-                {coll.documents.length}
+                
                 <>
                   {coll.documents[0].doc &&
                     coll.documents?.map(
@@ -108,7 +110,7 @@ const Collection = ({
                             {document.doc.documentNum}
                           </td>
                           <td className="align-middle">
-                            {document.doc.object}
+                            {document.doc.objet}
                           </td>
                           <td className="align-middle">
                             {document.doc.firstName}{' '}
@@ -123,6 +125,12 @@ const Collection = ({
                           </td>
                           <td className="align-middle">
                             {document.doc.profession}
+                          </td>
+                          <td className="align-middle">
+                            {document.doc.tel}
+                          </td>
+                          <td className="align-middle">
+                            {document.doc.resume}
                           </td>
                         </tr>
                       )

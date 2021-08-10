@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+} from 'react'
 import {
   Link,
   useLocation,
@@ -9,10 +13,10 @@ import {
   Col,
   Form,
   Row,
+  Alert,
 } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/FormContainer'
-import Message from '../components/Message'
 import { register } from '../redux/actions/userActions'
 
 const Register = () => {
@@ -31,21 +35,25 @@ const Register = () => {
 
   const dispatch = useDispatch()
 
-  const { loading, error, userInfo } = useSelector(
+  const { loading, error} = useSelector(
     (state) => state.registerState
   )
-  const isAuthorised = (...roles) => {
-    return !userInfo
-      ? false
-      : roles.includes(userInfo.user.role)
-  }
+  const {userInfo } = useSelector(
+    (state) => state.loginState
+  )
+  const isAuthorised = useCallback(
+    (...roles) => {
+      return !userInfo
+        ? false
+        : roles.includes(userInfo.user.role)
+    },
+    [userInfo]
+  )
   useEffect(() => {
-    if (!userInfo) {
+    if (!userInfo  || isAuthorised('admin') === false) {
       history.push('/')
-    } else {
-      history.push(redirect)
     }
-  }, [userInfo, history, redirect])
+  }, [userInfo, history,isAuthorised])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -55,7 +63,9 @@ const Register = () => {
       )
     } else {
       setMessage(null)
-      dispatch(register(name, email, password, role))
+      dispatch(
+        register(name, email, password, role, history)
+      )
     }
   }
 
@@ -66,7 +76,7 @@ const Register = () => {
       <h1>Register new user </h1>
       <FormContainer>
         {error && (
-          <Message variant="danger">{error}</Message>
+          <Alert variant="danger">{error}</Alert>
         )}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="email">
@@ -96,7 +106,7 @@ const Register = () => {
             <Form.Label>role</Form.Label>
             <Form.Control
               as="select"
-              value="service1"
+              value={role}
               onChange={(e) => setRole(e.target.value)}
             >
               {isAuthorised('admin') && (

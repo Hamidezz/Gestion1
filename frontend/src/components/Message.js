@@ -27,7 +27,7 @@ const Message = () => {
     >
       <Toast.Header>
         <small className="mr-auto">
-          {variant === 'danger' ? 'Error' : 'success'}
+          {variant === 'danger' ? 'Attention' : 'succès'}
         </small>
       </Toast.Header>
       <Toast.Body

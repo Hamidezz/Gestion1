@@ -77,7 +77,7 @@ const Order = ({ order, activeKey }) => {
                     {document.doc.documentNum}
                   </td>
                   <td className="align-middle">
-                    {document.doc.object}
+                    {document.doc.objet}
                   </td>
                   <td className="align-middle">
                     {document.doc.firstName}{' '}
