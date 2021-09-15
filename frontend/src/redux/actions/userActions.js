@@ -58,12 +58,10 @@ export const logout =
   }
 
 export const register =
-<<<<<<< HEAD
-  (name, email, password, role, history) => async (dispatch) => {
-=======
+
   (name, email, password, role, history) =>
   async (dispatch) => {
->>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
+
     try {
       dispatch({
         type: USER_REGISTER_REQUEST,
@@ -106,3 +104,4 @@ export const register =
       })
     }
   }
+

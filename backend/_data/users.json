@@ -1,20 +1,11 @@
-<<<<<<< HEAD
 
-[
     {
       "name": "Hamidez",
       "email": "Hamidez@gmail.com",
       "role": "admin",
       "password": "123456"
     }
-  ]
-=======
-[
-  {
-    "name": "Admin Account",
-    "email": "admin@gmail.com",
-    "role": "admin",
-    "password": "123456"
-  }
-]
->>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
+ 
+
+  
+

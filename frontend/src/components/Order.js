@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import { Accordion, Row, Table } from 'react-bootstrap'
 import moment from 'moment'
+
 import 'moment/locale/fr'
 import {
   FaRegArrowAltCircleDown,
   FaRegArrowAltCircleUp,
 } from 'react-icons/fa'
+import { Modal } from 'bootstrap'
 // import { useSelector } from 'react-redux'
+
+
 
 const Order = ({ order, activeKey }) => {
   // accordion handler
@@ -60,47 +64,70 @@ const Order = ({ order, activeKey }) => {
             className="table-sm"
           >
             <thead>
-              <tr>
-                <th>document nombre</th>
-                <th>objet</th>
-                <th>nom/Prenom</th>
-                <th>cin</th>
-                <th>ville/Province</th>
-                <th>fonction</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* {coll.documents.length} */}
-              {order.documents?.map((document, i) => (
-                <tr key={i}>
-                  <td className="align-middle">
-                    {document.doc.documentNum}
-                  </td>
-                  <td className="align-middle">
-                    {document.doc.objet}
-                  </td>
-                  <td className="align-middle">
-                    {document.doc.firstName}{' '}
-                    {document.doc.lastName}
-                  </td>
-                  <td className="align-middle">
-                    {document.doc.cin}
-                  </td>
-                  <td className="align-middle">
-                    {document.doc.city}{' '}
-                    {document.doc.province}
-                  </td>
-                  <td className="align-middle">
-                    {document.doc.profession}
-                  </td>
+                <tr>
+                  
+                  <th> Numéro du document </th>
+                  <th>objet</th>
+                  <th>nom/Prenom</th>
+                  <th>cin</th>
+                  <th>ville/Province</th>
+                  <th>fonction</th>
+                  <th>Resume</th>
+                  
+                  
+                 
+                  
                 </tr>
-              ))}
-            </tbody>
+              </thead>
+              <tbody>
+                
+                <>
+                  {order.documents[0].doc && order.documents?.map(
+                      (document, i) => (
+                        <tr key={i}>
+                          <td className="align-middle">
+                            {document.doc.documentNum}
+                          </td>
+                          
+                          <td className="align-middle">
+                            {document.doc.objet}
+                          </td>
+
+                          <td className="align-middle">
+                            {document.doc.firstName}{' '}
+                            {document.doc.lastName}
+                          </td>
+                          <td className="align-middle">
+                            {document.doc.cin}
+                          </td>
+                          <td className="align-middle">
+                            {document.doc.city}{' '}
+                            {document.doc.province}
+                          </td>
+                          <td className="align-middle">
+                            {document.doc.profession}
+                          </td>
+                          <td className="align-middle">
+                            {document.doc.resume}
+                          </td>
+                          
+                          
+
+                          
+                        </tr>
+                      )
+                    )}
+                </>
+              </tbody>
+              
+              
+              
           </Table>
         </>
       </Accordion.Collapse>
     </div>
   )
 }
+
 
 export default Order

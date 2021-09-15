@@ -95,15 +95,15 @@ const Collection = ({
                   <th>cin</th>
                   <th>ville/Province</th>
                   <th>fonction</th>
-                  <th>Tel</th>
+                  
                   <th>Resume</th>
+                  <th>autorité</th>
                 </tr>
               </thead>
               <tbody>
                 
                 <>
-                  {coll.documents[0].doc &&
-                    coll.documents?.map(
+                  {coll.documents[0].doc && coll.documents?.map(
                       (document, i) => (
                         <tr key={i}>
                           <td className="align-middle">
@@ -112,6 +112,7 @@ const Collection = ({
                           <td className="align-middle">
                             {document.doc.objet}
                           </td>
+
                           <td className="align-middle">
                             {document.doc.firstName}{' '}
                             {document.doc.lastName}
@@ -126,12 +127,14 @@ const Collection = ({
                           <td className="align-middle">
                             {document.doc.profession}
                           </td>
-                          <td className="align-middle">
-                            {document.doc.tel}
-                          </td>
+                          
                           <td className="align-middle">
                             {document.doc.resume}
                           </td>
+                          <td className="align-middle">
+                            {document.doc.autorité}
+                          </td>
+                          
                         </tr>
                       )
                     )}

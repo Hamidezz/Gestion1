@@ -19,32 +19,21 @@ exports.register = async (req, res, next) => {
     )
   }
 
-<<<<<<< HEAD
-=======
+
   // const user = await User.create(req.body)
 
->>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
   let user
   try {
     user = await User.create(req.body)
   } catch (err) {
-<<<<<<< HEAD
     if (err.name ='ValidationError') {
       const message = Object.values(err.errors).map(
       (val) => val.message
-=======
-    if (err.name === 'ValidationError') {
-      const message = Object.values(err.errors).map(
-        (val) => val.message
->>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
       )
       return next(new ErrorResponse(message, 400))
     }
   }
-<<<<<<< HEAD
-  
-=======
->>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
+
 
   if (user) {
     res.status(201).json({

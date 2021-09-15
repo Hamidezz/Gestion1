@@ -39,7 +39,8 @@ export const PdfProvider = ({ children }) => {
                   'nom/Prenom',
                   'cin',
                   'ville/Province',
-                  'fonction' , 'resumé'
+                  'fonction' ,
+                   'resumé'
               ],
             ],
             body: docsToArray,

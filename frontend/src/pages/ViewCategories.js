@@ -80,7 +80,8 @@ const ViewCategories = () => {
       >
         <thead>
           <tr>
-            <th>category</th>
+            
+            <th>Nom de category</th>
             <th>créé à</th>
             <th
               style={{
@@ -93,6 +94,7 @@ const ViewCategories = () => {
         <tbody>
           {categories?.map((cate, i) => (
             <tr key={i}>
+              
               <td>{cate.name}</td>
 
               <td>

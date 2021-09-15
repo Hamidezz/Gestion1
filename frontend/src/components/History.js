@@ -1,7 +1,8 @@
 import React from 'react'
-import { Table, Alert } from 'react-bootstrap'
+import { Table, Alert ,Row } from 'react-bootstrap'
 import moment from 'moment'
 import 'moment/locale/fr'
+
 const History = ({
   histories, //histories
   filterBy,
@@ -21,11 +22,13 @@ const History = ({
             <tr>
               {filterBy === 'documents' && (
                 <>
+                
                   <th>document nombre</th>
                   <th>objet</th>
                   <th>nom / Prenom</th>
                   <th>cin</th>
                   <th>ville / Province</th>
+                  <th>Resume</th>
                   <th>créé à</th>
                 </>
               )}
@@ -38,7 +41,9 @@ const History = ({
               {filterBy === 'orders' && (
                 <>
                   <th>id</th>
+                  
                   <th>documents</th>
+                  
                 </>
               )}
             </tr>
@@ -67,6 +72,9 @@ const History = ({
                         {hs.document.province}
                       </td>
                       <td className="align-middle">
+                        {hs.document.resume}
+                      </td>
+                      <td className="align-middle">
                         {moment(hs.document.createdAt)
                           .locale('fr')
                           .format('LLL')}
@@ -82,6 +90,7 @@ const History = ({
                       <td className="align-middle">
                         {hs.category.name}
                       </td>
+                      
                       <td className="align-middle">
                         {moment(hs.category.createdAt)
                           .locale('fr')
@@ -98,11 +107,15 @@ const History = ({
                       <td className="align-middle">
                         {hs.order._id}
                       </td>
+
+                      
+                      
                       <td className="align-middle">
                         {moment(hs.order.createdAt)
                           .locale('fr')
                           .format('LLL')}
                       </td>
+                      
                     </tr>
                   )
               )}

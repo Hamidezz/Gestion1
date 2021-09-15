@@ -15,6 +15,8 @@ import {
 import { useSocketValue } from '../context/socket'
 import { Link } from 'react-router-dom'
 import { usePdfGenerator } from '../context/pdfGenerator'
+import moment from 'moment'
+import 'moment/locale/fr'
 const Documents = ({
   documents,
   filterBy,
@@ -102,10 +104,18 @@ const Documents = ({
                 ['new', 'all'].includes(
                   filterBy.toLowerCase()
                 ) && <th></th>}
-                <th> Numéro du document</th>
-                <th>Date</th>
-                <th>objet</th>
-                <th>Resumé</th>
+
+                <th> Numéro du document </th>
+                
+                  <th>objet</th>
+                  <th>nom/Prenom</th>
+                  <th>cin</th>
+                  <th>ville/Province</th>
+                  <th>fonction</th>
+                 
+                  <th>resume</th>
+                  <th>créé à</th>
+                  
                 {filterBy.toLowerCase() === 'all' && (
                   <th
                     style={{
@@ -158,18 +168,39 @@ const Documents = ({
                       </td>
                     )}
 
-                  <td className="align-middle">
-                    {document.documentNum}
-                  </td>
-                  <td className="align-middle">
-                    {document.date}
-                  </td>
-                  <td className="align-middle">
-                    {document.objet}
-                  </td>
-                  <td className="align-middle">
-                    {document.resume}
-                  </td>
+                          <td className="align-middle">
+                            {document.documentNum}
+                          </td>
+                          
+                          
+                          
+                          <td className="align-middle">
+                            {document.objet}
+                          </td>
+                          <td className="align-middle">
+                            {document.firstName}{' '}
+                            {document.lastName}
+                          </td>
+                          <td className="align-middle">
+                            {document.cin}
+                          </td>
+                          <td className="align-middle">
+                            {document.city}{' '}
+                            {document.province}
+                          </td>
+                          <td className="align-middle">
+                            {document.profession}
+                          </td>
+                         
+                          <td className="align-middle">
+                            {document.resume}
+                            </td>
+                            <td className="align-middle">
+                        {moment(document.createdAt)
+                          .locale('fr')
+                          .format('LLL')}
+                      </td>
+                      
                   {filterBy.toLowerCase() ===
                     'all' && (
                     <td className="align-middle">

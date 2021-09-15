@@ -37,6 +37,7 @@ const UpdateDocument = () => {
   const [objet, setObjet] = useState('')
   const [address, setAddress] = useState('')
   const [resume, setResume] = useState('')
+  
 
   const history = useHistory()
 
@@ -82,6 +83,7 @@ const UpdateDocument = () => {
     setObjet(document?.objet)
     setAddress(document?.address)
     setResume(document?.resume)
+    
   }, [document])
 
   const handelSubmit = (e) => {
@@ -100,6 +102,7 @@ const UpdateDocument = () => {
           objet,
           resume,
           address,
+          
         },
         document._id
       )
@@ -305,6 +308,7 @@ const UpdateDocument = () => {
                   />
                 </Form.Group>
               </Col>
+              
             </Row>
           </Col>
           <Col>

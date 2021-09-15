@@ -64,6 +64,7 @@ const SideBar = () => {
                         {
                           itemTitle: 'Création du document',
                           linkTo: '/new_document',
+                          
                         },
                         {
                           itemTitle: 'Document affiché',

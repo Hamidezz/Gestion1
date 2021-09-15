@@ -134,7 +134,7 @@ const ViewDocuments = () => {
         onSelect={(k) => setActiveTab(k)}
         className="mr-0 h5 tabs-wrapper"
       >
-        <Tab eventKey="NEW" title="NEW">
+        <Tab eventKey="NEW" title="Nouveaux">
           <Documents
             filterBy="NEW"
             documents={documents}
@@ -142,8 +142,20 @@ const ViewDocuments = () => {
             ondeleteDocument={ondeleteDocument}
           />
         </Tab>
+        <Tab eventKey="PENDING" title="En Attente">
+          <Documents
+            filterBy="PENDING"
+            documents={documents}
+          />
+        </Tab>
+        <Tab eventKey="FINISHED" title="Finit">
+          <Documents
+            filterBy="FINISHED"
+            documents={documents}
+          />
+        </Tab>
         
-        <Tab eventKey="ALL" title="ALL">
+        <Tab eventKey="ALL" title="Tout">
           <Documents
             filterBy="ALL"
             documents={documents}

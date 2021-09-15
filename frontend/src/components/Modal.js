@@ -226,7 +226,7 @@ const CateModal = ({
                           className="m-2"
                         >
                           destinataire
-                        </Form.Label>
+                        </Form.Label> 
                         <Row className="mx-2">
                           <Form.Control
                             type="text"

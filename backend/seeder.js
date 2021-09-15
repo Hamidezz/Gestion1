@@ -45,8 +45,5 @@ const importData = async () => {
   }
 }
 
-<<<<<<< HEAD
-importData()
-=======
-importData()
->>>>>>> 1f89c9805bb741da3be9f3279792c0db90078101
+
+
