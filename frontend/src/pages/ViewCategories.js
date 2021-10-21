@@ -82,6 +82,7 @@ const ViewCategories = () => {
           <tr>
             
             <th>Nom de category</th>
+            
             <th>créé à</th>
             <th
               style={{
@@ -96,6 +97,7 @@ const ViewCategories = () => {
             <tr key={i}>
               
               <td>{cate.name}</td>
+             
 
               <td>
                 {moment(cate.createdAt)

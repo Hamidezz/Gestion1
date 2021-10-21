@@ -3,6 +3,7 @@ import { Accordion, Alert } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { getCollections } from '../redux/actions/collectionActions'
+import { destinataire } from '../components/Modal'
 
 import Collection from '../components/Collection'
 const PlaceOrder = () => {

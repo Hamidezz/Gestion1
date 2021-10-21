@@ -54,12 +54,7 @@ const ViewHistory = () => {
             userInfo={userInfo}
           />
         </Tab>
-        <Tab eventKey="categories" title="categories">
-          <History
-            filterBy="categories"
-            histories={histories}
-          />
-        </Tab>
+        
         <Tab eventKey="orders" title="orders">
           <History
             filterBy="orders"

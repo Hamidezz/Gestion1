@@ -96,8 +96,9 @@ const Collection = ({
                   <th>ville/Province</th>
                   <th>fonction</th>
                   
+
                   <th>Resume</th>
-                  <th>autorité</th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -128,12 +129,11 @@ const Collection = ({
                             {document.doc.profession}
                           </td>
                           
+                          
                           <td className="align-middle">
                             {document.doc.resume}
                           </td>
-                          <td className="align-middle">
-                            {document.doc.autorité}
-                          </td>
+                          
                           
                         </tr>
                       )

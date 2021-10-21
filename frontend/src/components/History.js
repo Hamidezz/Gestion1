@@ -29,6 +29,7 @@ const History = ({
                   <th>cin</th>
                   <th>ville / Province</th>
                   <th>Resume</th>
+                  
                   <th>créé à</th>
                 </>
               )}
@@ -42,7 +43,7 @@ const History = ({
                 <>
                   <th>id</th>
                   
-                  <th>documents</th>
+                  <th>Créer à</th>
                   
                 </>
               )}
@@ -74,6 +75,7 @@ const History = ({
                       <td className="align-middle">
                         {hs.document.resume}
                       </td>
+                      
                       <td className="align-middle">
                         {moment(hs.document.createdAt)
                           .locale('fr')
